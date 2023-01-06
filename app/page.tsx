@@ -1,5 +1,5 @@
-import Image from 'next/image';
-import data from '../data.json';
+import Image from "next/image";
+import data from "../data.json";
 
 export function TwitterIcon() {
   return (
@@ -98,15 +98,21 @@ export default function Home() {
         <LinkCard key={link.href} {...link} />
       ))}
       <div className="flex items-center gap-4 mt-8 text-white">
-        {data.socials.map((link) => {
-          if (link.href.includes('twitter')) {
-            return <TwitterIcon />;
-          }
-          if (link.href.includes('github')) {
-            return <GitHubIcon />;
-          }
-        })}
+        {data.socials.map((link) => (
+          <a key={link.href} href={link.href}>
+            {resolveIcon(link.href)}
+          </a>
+        ))}
       </div>
     </div>
   );
 }
+
+const resolveIcon = (href: string) => {
+  if (href.includes("twitter")) {
+    return <TwitterIcon />;
+  }
+  if (href.includes("github")) {
+    return <GitHubIcon />;
+  }
+};
