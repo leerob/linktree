@@ -1,7 +1,11 @@
 import Image from 'next/image';
-import data from '../data.json';
+import { get } from '@vercel/edge-config';
+import { redirect } from 'next/navigation';
 
-export function TwitterIcon() {
+export const dynamic = 'force-dynamic',
+  runtime = 'edge';
+
+function TwitterIcon() {
   return (
     <svg
       width="30"
@@ -25,7 +29,7 @@ export function TwitterIcon() {
   );
 }
 
-export function GitHubIcon() {
+function GitHubIcon() {
   return (
     <svg
       width="30"
@@ -83,7 +87,32 @@ function LinkCard({
   );
 }
 
-export default function Home() {
+interface Data {
+  name: string;
+  avatar: string;
+  links: Link[];
+  socials: Social[];
+}
+
+interface Link {
+  href: string;
+  title: string;
+  image?: string;
+}
+
+interface Social {
+  href: string;
+  title: string;
+  image?: string;
+}
+
+export default async function HomePage() {
+  const data: Data | undefined = await get('linktree');
+
+  if (!data) {
+    redirect('https://linktr.ee/selenagomez');
+  }
+
   return (
     <div className="flex items-center flex-col mx-auto w-full justify-center mt-16 px-8">
       <Image
@@ -98,12 +127,12 @@ export default function Home() {
         <LinkCard key={link.href} {...link} />
       ))}
       <div className="flex items-center gap-4 mt-8 text-white">
-        {data.socials.map((link) => {
-          if (link.href.includes('twitter')) {
-            return <TwitterIcon />;
+        {data.socials.map((social) => {
+          if (social.href.includes('twitter')) {
+            return <TwitterIcon key={social.href} />;
           }
-          if (link.href.includes('github')) {
-            return <GitHubIcon />;
+          if (social.href.includes('github')) {
+            return <GitHubIcon key={social.href} />;
           }
         })}
       </div>
