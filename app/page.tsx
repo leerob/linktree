@@ -132,6 +132,7 @@ export default async function HomePage() {
       <div className="flex items-center gap-4 mt-8 text-white">
         {data.socials.map((social) => (
           <a
+            aria-label={`${social.title} link`}
             key={social.href}
             href={social.href}
             target="_blank"
